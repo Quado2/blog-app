@@ -2,14 +2,19 @@ import { ApolloServer,} from "apollo-server-micro";
 import Cors from "micro-cors";
 
 import {typeDefs} from './graphql/schema'
-import {Query} from './graphql/resolvers'
+import {Query,Mutation} from './graphql/resolvers';
+import prisma from '../../lib/prisma'
 
 const cors = Cors();
 
 const server = new ApolloServer({
 	typeDefs,
 	resolvers:{
-    Query
+    Query,
+    Mutation
+  },
+  context: {
+    prisma
   }
 });
 
