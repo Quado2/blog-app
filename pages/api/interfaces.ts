@@ -1,5 +1,20 @@
-import { Post, Prisma, PrismaClient,  } from "@prisma/client";
+import { Post, Prisma, PrismaClient } from "@prisma/client";
 import { introspectionFromSchema } from "graphql";
+
+export interface UserInput {
+	name: string;
+	email: string;
+	password: string;
+	bio: string;
+}
+
+export interface UserPayload{
+  userErrors:{
+    message: string,
+  }[];
+  user:null
+}
+
 
 export interface Context {
 	prisma: PrismaClient<
@@ -11,8 +26,8 @@ export interface Context {
 
 export interface PostArgs {
 	post: {
-		title ?: string;
-		content ?: string;
+		title?: string;
+		content?: string;
 	};
 }
 
