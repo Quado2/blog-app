@@ -1,5 +1,8 @@
 import { Context, UserInput, UserPayload } from "../../../interfaces"
 import validator from 'validator'
+import bcrypt from 'bcryptjs'
+
+
 export const authResolvers ={
   signup: async (_:any, {user}:{user:UserInput}, {prisma}:Context): Promise<UserPayload> => {
     const {name, email, bio, password} = user;
@@ -27,6 +30,8 @@ export const authResolvers ={
       }
     }
 
+    
+
     if(!name || !bio){
       return{
         userErrors: [{
@@ -36,6 +41,16 @@ export const authResolvers ={
       }
     }
 
+    const hashedPassword = await bcrypt.hash(password,6)
+
+    await prisma.user.create({
+      data: {
+        email,
+         name,
+         password: hashedPassword
+      }
+    })
+    
     return null
   }
 }
