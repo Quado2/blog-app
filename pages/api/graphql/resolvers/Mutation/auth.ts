@@ -15,7 +15,7 @@ export const authResolvers ={
           message: "Invalid Email"
         }],
         user: null
-      }
+      } 
     }
 
     const isValidPassword = validator.isLength(password, {
@@ -50,7 +50,10 @@ export const authResolvers ={
          password: hashedPassword
       }
     })
-    
-    return null
+
+    return{
+      userErrors: [],
+      user: null
+    }
   }
 }
