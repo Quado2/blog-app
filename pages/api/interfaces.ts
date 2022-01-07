@@ -7,12 +7,16 @@ export interface UserInput {
 	password: string;
 	bio: string;
 }
+export interface CredentialsInput{
+	email: string
+	password: string
+	}
 
 export interface UserPayload{
   userErrors:{
     message: string,
   }[];
-  user:null
+  token : string | null
 }
 
 
