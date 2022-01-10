@@ -3,6 +3,8 @@ import {gql} from 'apollo-server-micro'
 export const typeDefs = gql`
 	type Query {
 		posts: [Post]
+    me: User
+    profile(userId: ID!): Profile
 	}
 
   type Mutation{
@@ -11,6 +13,8 @@ export const typeDefs = gql`
     postDelete(postId: ID!): PostPayload!
     signup(user:UserInput!): AuthPayload!
     signIn(credentials: CredentialsInput): AuthPayload!
+    postPublish(postId: ID!, shouldPublish:Boolean!): PostPayload!
+    
   }
 
   type Post {
@@ -26,7 +30,6 @@ export const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    profile: Profile!
     posts: [Post!]!
   }
 
