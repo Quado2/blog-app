@@ -42,22 +42,22 @@ export default function Signin({posts}:{posts:any}) {
   );
 }
 
-export async function getStaticProps() {
-  const { data } = await client.query({
-    query: gql`
-      query {
-        title
-        user{
-          name
-          email
-        }
-      }
-    `,
-  });
+// export async function getStaticProps() {
+//   const { data } = await client.query({
+//     query: gql`
+//       query {
+//         title
+//         user{
+//           name
+//           email
+//         }
+//       }
+//     `,
+//   });
 
-  return {
-    props: {
-      posts: data.countries.slice(0, 4),
-    },
- };
-}
+//   return {
+//     props: {
+//       posts: data.countries.slice(0, 4),
+//     },
+//  };
+// }
