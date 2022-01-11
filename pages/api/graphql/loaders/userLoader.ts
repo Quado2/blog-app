@@ -15,12 +15,13 @@ const batchUsers :BatchUser = async (ids) => {
     }
   })
 
+
   const userMap: {[key: string]: User} = {}
   users.forEach((user) => {
     userMap[user.id] = user
   });
 
-  return ids.map((id) => userMap.id)
+  return ids.map((id) => userMap[id])
 }
 
 //@ts-ignore
