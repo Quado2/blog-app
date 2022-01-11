@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-
 import { Form } from "react-bootstrap";
+import {gql} from '@apollo/client';
+import client from '../../apollo-client'
 
-export default function Signin() {
+export default function Signin({posts}:{posts:any}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleClick = () => {};
 
   const [error, setError] = useState(null);
+
+  console.log(posts)
 
   return (
     <div>
@@ -37,4 +40,24 @@ export default function Signin() {
       </Form>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const { data } = await client.query({
+    query: gql`
+      query {
+        title
+        user{
+          name
+          email
+        }
+      }
+    `,
+  });
+
+  return {
+    props: {
+      posts: data.countries.slice(0, 4),
+    },
+ };
 }
