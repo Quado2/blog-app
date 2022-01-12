@@ -1,7 +1,7 @@
 import React from "react";
 import Post from "../../components/Post/Post";
 import { gql, useQuery } from "@apollo/client";
-import client from "../../apollo-client";
+
 
 const GET_POSTS = gql`
 	query {
@@ -16,17 +16,8 @@ const GET_POSTS = gql`
 `;
 
 const Posts = () => {
-  let loadedData, loading, error
-	async function getData() {
-		const { data, loading, error } = await client.query({
-			query: GET_POSTS,
-		});
-    loadedData = data
-
-	}
-
-  getData();
-  console.log({loadedData})
+ const {data, error, loading} = useQuery(GET_POSTS)
+  console.log({data, error, loading})
 
 
 

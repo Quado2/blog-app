@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import {gql} from '@apollo/client';
-import client from '../../apollo-client'
+//import client from '../../apollo-client'
 
 export default function Signin({posts}:{posts:any}) {
   const [email, setEmail] = useState("");
