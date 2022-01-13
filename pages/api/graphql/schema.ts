@@ -3,6 +3,8 @@ import {gql} from 'apollo-server-micro'
 export const typeDefs = gql`
 	type Query {
 		posts: [Post]
+    me: User
+    profile(userId: ID!): Profile
 	}
 
   type Mutation{
@@ -10,6 +12,9 @@ export const typeDefs = gql`
     postUpdate(postId: ID!, post: PostInput!): PostPayload
     postDelete(postId: ID!): PostPayload!
     signup(user:UserInput!): AuthPayload!
+    signIn(credentials: CredentialsInput): AuthPayload!
+    postPublish(postId: ID!, shouldPublish:Boolean!): PostPayload!
+    
   }
 
   type Post {
@@ -25,7 +30,6 @@ export const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    profile: Profile!
     posts: [Post!]!
   }
 
@@ -42,7 +46,7 @@ export const typeDefs = gql`
 
   type AuthPayload{
     userErrors: [UserError!]!
-    user: User
+    token: String
   }
 
   type UserError{
@@ -60,6 +64,12 @@ export const typeDefs = gql`
     password: String!
     bio: String!
   }
+
+  input CredentialsInput{
+    email: String!
+    password: String!
+  }
+  
 
 `;
 

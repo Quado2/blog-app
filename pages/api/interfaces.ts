@@ -1,4 +1,4 @@
-import { Post, Prisma, PrismaClient } from "@prisma/client";
+import { Post, Prisma, PrismaClient, User } from "@prisma/client";
 import { introspectionFromSchema } from "graphql";
 
 export interface UserInput {
@@ -7,12 +7,16 @@ export interface UserInput {
 	password: string;
 	bio: string;
 }
+export interface CredentialsInput{
+	email: string
+	password: string
+	}
 
 export interface UserPayload{
   userErrors:{
     message: string,
   }[];
-  user:null
+  token : string | null;
 }
 
 
@@ -22,6 +26,9 @@ export interface Context {
 		never,
 		Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
 	>;
+	userInfo: {
+		userId: number | null,
+	} | null
 }
 
 export interface PostArgs {
@@ -36,4 +43,18 @@ export interface PostPayloadType {
 		message: string;
 	}[];
 	post: Post | null | Prisma.Prisma__PostClient<Post>;
+}
+
+export interface ProfileParent {
+	id: string;
+	bio: string;
+	user:User
+}
+
+export interface UserParent {
+	id: string;
+}
+
+export interface PostParent{
+	authorId: string
 }

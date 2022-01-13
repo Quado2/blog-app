@@ -1,11 +1,23 @@
 import { Context, PostArgs, PostPayloadType } from "../../../interfaces";
+import { canUserMutatePost } from "../../../utils/canUserMutatePost";
 
 export const postResolvers = {
-  postCreate: async (
+	postCreate: async (
 		parent: any,
 		{ post }: PostArgs,
-		{ prisma }: Context
+		{ prisma, userInfo }: Context
 	): Promise<PostPayloadType> => {
+		if (!userInfo) {
+			return {
+				userErrors: [
+					{
+						message: "Forbidden ! (you are not authorized)",
+					},
+				],
+				post: null,
+			};
+		}
+
 		const { title, content } = post;
 		if (!title || !content) {
 			return {
@@ -24,7 +36,7 @@ export const postResolvers = {
 				data: {
 					title,
 					content,
-					authorId: 1,
+					authorId: userInfo.userId as number,
 				},
 			}),
 		};
@@ -33,7 +45,7 @@ export const postResolvers = {
 	postUpdate: async (
 		_: any,
 		{ postId, post }: { postId: String; post: PostArgs["post"] },
-		{ prisma }: Context
+		{ prisma, userInfo }: Context
 	): Promise<PostPayloadType> => {
 		const { title, content } = post;
 
@@ -48,6 +60,7 @@ export const postResolvers = {
 			};
 		}
 
+		//Does post exist??
 		const postExist = await prisma.post.findUnique({
 			where: {
 				id: Number(postId),
@@ -58,6 +71,25 @@ export const postResolvers = {
 				userErrors: [
 					{
 						message: "Post does not exist",
+					},
+				],
+				post: null,
+			};
+		}
+		console.log(userInfo);
+
+		//Check if user can update
+		const canUser = await canUserMutatePost({
+			postId: Number(postId),
+			userId: Number(userInfo?.userId),
+			prisma,
+		});
+		console.log(canUser);
+		if (!canUser) {
+			return {
+				userErrors: [
+					{
+						message: "Unauthorised to Edit the post",
 					},
 				],
 				post: null,
@@ -85,32 +117,109 @@ export const postResolvers = {
 		};
 	},
 
-  postDelete: async (_:any, {postId}:{postId:String}, {prisma}:Context):Promise<PostPayloadType> => {
-    const post = await prisma.post.findUnique({
-      where: {
-        id: Number(postId),
-      }
-    });
-    if(!post){
-      return{
-        userErrors: [
+	postDelete: async (
+		_: any,
+		{ postId }: { postId: String },
+		{ prisma, userInfo }: Context
+	): Promise<PostPayloadType> => {
+		//Check if post exists
+		const post = await prisma.post.findUnique({
+			where: {
+				id: Number(postId),
+			},
+		});
+		if (!post) {
+			return {
+				userErrors: [
 					{
 						message: "Post does not exist",
 					},
 				],
-        post: null
-      }
-    }
+				post: null,
+			};
+		}
 
-    await prisma.post.delete({
-      where:{
-        id: Number(postId)
-      }
-    })
+		//Check if user can delete
+		const canUser = await canUserMutatePost({
+			postId: Number(postId),
+			userId: Number(userInfo?.userId),
+			prisma,
+		});
+		console.log(canUser);
+		if (!canUser) {
+			return {
+				userErrors: [
+					{
+						message: "Unauthorised to Delete this post",
+					},
+				],
+				post: null,
+			};
+		}
 
-    return{
-        userErrors:[],
-        post
-    }
-  }
-}
+		await prisma.post.delete({
+			where: {
+				id: Number(postId),
+			},
+		});
+
+		return {
+			userErrors: [],
+			post,
+		};
+	},
+
+	postPublish: async (
+		_: any,
+		{ postId, shouldPublish }: { postId: string; shouldPublish: Boolean },
+		{ prisma, userInfo }: Context
+	): Promise<PostPayloadType> => {
+		//Does post exist??
+		const postExist = await prisma.post.findUnique({
+			where: {
+				id: Number(postId),
+			},
+		});
+		if (!postExist) {
+			return {
+				userErrors: [
+					{
+						message: "Post does not exist",
+					},
+				],
+				post: null,
+			};
+		}
+		console.log(userInfo);
+
+		//Check if user can update
+		const canUser = await canUserMutatePost({
+			postId: Number(postId),
+			userId: Number(userInfo?.userId),
+			prisma,
+		});
+		console.log(canUser);
+		if (!canUser) {
+			return {
+				userErrors: [
+					{
+						message: "Unauthorised to Edit the post",
+					},
+				],
+				post: null,
+			};
+		}
+
+		return {
+			userErrors: [],
+			post: prisma.post.update({
+				where: {
+					id: Number(postId),
+				},
+				data: {
+					published: shouldPublish ? true: false
+				}
+			}),
+		};
+	},
+};
