@@ -28,15 +28,16 @@ export default function Posts() {
 
   return (
     <div>
-      {posts.map((post) => {
+      {posts.map((post: any) => {
         return (
           <Post
-            title={post.title}
-            content={post.content}
-            date={post.createdAt}
-            id={post.id}
-            user={post.user.name}
-          />
+						title={post.title}
+						content={post.content}
+						date={post.createdAt}
+						id={post.id}
+						user={post.user.name} 
+						published={post.user.published} 
+						isMyProfile={post.user.isMyProfile}          />
         );
       })}
     </div>
