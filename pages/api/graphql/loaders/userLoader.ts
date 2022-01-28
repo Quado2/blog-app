@@ -17,7 +17,7 @@ const batchUsers :BatchUser = async (ids) => {
 
 
   const userMap: {[key: string]: User} = {}
-  users.forEach((user) => {
+  users.forEach((user:any) => {
     userMap[user.id] = user
   });
 

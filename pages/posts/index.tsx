@@ -4,24 +4,41 @@ import { gql, useQuery } from "@apollo/client";
 
 
 const GET_POSTS = gql`
-	query {
-		posts {
-			title
-			user {
-				name
-				email
-			}
-		}
-	}
+  query {
+    posts {
+      id
+      title
+      content
+      createdAt
+      user {
+        name
+      }
+    }
+  }
 `;
 
-const Posts = () => {
- const {data, error, loading} = useQuery(GET_POSTS)
-  console.log({data, error, loading})
+export default function Posts() {
+  const { error, loading, data } = useQuery(GET_POSTS);
 
+  if (error) return <div>Error Page</div>;
 
+  if (loading) return <div>Spinner...</div>;
 
-	return <div></div>;
-};
+  const { posts } = data;
 
-export default Posts;
+  return (
+    <div>
+      {posts.map((post) => {
+        return (
+          <Post
+            title={post.title}
+            content={post.content}
+            date={post.createdAt}
+            id={post.id}
+            user={post.user.name}
+          />
+        );
+      })}
+    </div>
+  );
+}
