@@ -64,8 +64,6 @@ export default function Signup() {
 
 import { useMutation, gql } from "@apollo/client";
 import Button from "@restart/ui/esm/Button";
-import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
 
 const SIGNUP = gql`
   mutation Signup(
@@ -87,7 +85,7 @@ const SIGNUP = gql`
   }
 `;
 
-export default function Signup() {
+export default function Signup2() {
   const [signup, { data, loading }] = useMutation(SIGNUP);
 
   const [email, setEmail] = useState("");
