@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 
-export default function Signup() {
+export  function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
